@@ -372,9 +372,19 @@
                                 </div>
                             </div>
                             <input type="hidden" name="id" id="priceId">
-                            <div class="footer">
-                                <button type="button" class="btn cancel" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-solid" id="savePriceBtn">Save Prices</button>
+                            <div class="footer d-flex justify-content-between align-items-center w-100">
+                                <div id="tieredPricingContainer">
+                                    <a href="#" id="tieredPricingLink" class="btn btn-outline-primary" style="display: none;" target="_blank">
+                                        <i class="ri-price-tag-3-line me-1"></i> Manage Tiered Pricing
+                                    </a>
+                                    <span id="tieredPricingPlaceholder" class="text-muted small fst-italic">
+                                        <i class="ri-information-line me-1"></i> Save prices first to enable tiered pricing
+                                    </span>
+                                </div>
+                                <div>
+                                    <button type="button" class="btn cancel" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-solid" id="savePriceBtn">Save Prices</button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -956,9 +966,19 @@
 
 
                             $('#commission_type').trigger('change');
+                            
+                            // Show tiered pricing link when data exists
+                            var tieredUrl = '{{ url("admin/tiered-pricing") }}/' + data.vehicleTypeZone.id;
+                            document.getElementById('tieredPricingLink').href = tieredUrl;
+                            document.getElementById('tieredPricingLink').style.display = 'inline-block';
+                            document.getElementById('tieredPricingPlaceholder').style.display = 'none';
                         } else {
                             $('#priceId').val('');
                             $('#is_allow_tax').prop('checked', false);
+                            
+                            // Hide tiered pricing link when no data
+                            document.getElementById('tieredPricingLink').style.display = 'none';
+                            document.getElementById('tieredPricingPlaceholder').style.display = 'inline';
                             $('#is_allow_airport_charge').prop('checked', false);
                             $('#is_allow_preference').prop('checked', false);
 
@@ -1018,8 +1038,21 @@
                         $saveButton.prop('disabled', false);
                         $closeButton.prop('disabled', false);
                         if (data.success) {
-                            toastr.success('Price saved successfully');
-                            $priceModal.modal('hide');
+                            // Get the saved price ID
+                            var savedPriceId = $('#priceId').val() || data.vehicleTypeZone?.id || data.id;
+                            
+                            // Show tiered pricing link after successful save
+                            if (savedPriceId) {
+                                $('#priceId').val(savedPriceId);
+                                var tieredUrl = '{{ url("admin/tiered-pricing") }}/' + savedPriceId;
+                                document.getElementById('tieredPricingLink').href = tieredUrl;
+                                document.getElementById('tieredPricingLink').style.display = 'inline-block';
+                                document.getElementById('tieredPricingPlaceholder').style.display = 'none';
+                            }
+                            
+                            toastr.success('Price saved successfully! You can now manage tiered pricing.');
+                            // Don't hide the modal so user can click tiered pricing
+                            // $priceModal.modal('hide');
                             // location.reload();
                         } else {
                             showErrors(data.errors);
