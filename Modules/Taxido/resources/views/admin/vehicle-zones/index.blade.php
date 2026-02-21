@@ -372,18 +372,20 @@
                                 </div>
                             </div>
                             <input type="hidden" name="id" id="priceId">
-                            <div class="footer d-flex justify-content-between align-items-center w-100">
-                                <div id="tieredPricingContainer">
-                                    <a href="#" id="tieredPricingLink" class="btn btn-outline-primary" style="display: none;" target="_blank">
-                                        <i class="ri-price-tag-3-line me-1"></i> Manage Tiered Pricing
-                                    </a>
-                                    <span id="tieredPricingPlaceholder" class="text-muted small fst-italic">
-                                        <i class="ri-information-line me-1"></i> Save prices first to enable tiered pricing
-                                    </span>
-                                </div>
-                                <div>
-                                    <button type="button" class="btn cancel" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-solid" id="savePriceBtn">Save Prices</button>
+                            <div class="footer">
+                                <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 w-100">
+                                    <div id="tieredPricingContainer" class="flex-shrink-0">
+                                        <a href="#" id="tieredPricingLink" class="btn btn-outline-primary btn-sm" style="display: none;" target="_blank">
+                                            <i class="ri-price-tag-3-line me-1"></i> Manage Tiered Pricing
+                                        </a>
+                                        <span id="tieredPricingPlaceholder" class="text-muted small fst-italic d-none d-md-inline">
+                                            <i class="ri-information-line me-1"></i> Save prices first to enable tiered pricing
+                                        </span>
+                                    </div>
+                                    <div class="d-flex gap-2 flex-shrink-0">
+                                        <button type="button" class="btn cancel" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-solid" id="savePriceBtn">Save Prices</button>
+                                    </div>
                                 </div>
                             </div>
                         </form>

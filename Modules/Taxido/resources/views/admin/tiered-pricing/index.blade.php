@@ -115,9 +115,9 @@
                         <label class="form-check-label" for="tierStatus">Active</label>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Tier</button>
+                <div class="modal-footer d-flex justify-content-end gap-2">
+                    <button type="button" class="btn cancel" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-solid">Save Tier</button>
                 </div>
             </form>
         </div>
