@@ -153,4 +153,56 @@ class DriverController extends Controller
         return $this->repository->import($request);
     }
 
+    /**
+     * Lock driver's profile photo.
+     * Prevents driver from changing their photo via the app.
+     */
+    public function lockPhoto(Request $request, $id)
+    {
+        try {
+            $driver = Driver::findOrFail($id);
+            $driver->is_photo_locked = true;
+            $driver->photo_locked_at = now();
+            $driver->photo_locked_by = auth()->id();
+            $driver->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Driver photo has been locked successfully.',
+                'is_locked' => true,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to lock driver photo: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Unlock driver's profile photo.
+     * Allows driver to change their photo via the app.
+     */
+    public function unlockPhoto(Request $request, $id)
+    {
+        try {
+            $driver = Driver::findOrFail($id);
+            $driver->is_photo_locked = false;
+            $driver->photo_locked_at = null;
+            $driver->photo_locked_by = null;
+            $driver->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Driver photo has been unlocked successfully.',
+                'is_locked' => false,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to unlock driver photo: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
 }

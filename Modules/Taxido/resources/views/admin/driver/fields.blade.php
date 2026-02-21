@@ -757,6 +757,32 @@
                                     </div>
                                 </div>
 
+                                @if(isset($driver))
+                                <div class="form-group row">
+                                    <label class="col-md-2" for="photo_lock">Photo Lock</label>
+                                    <div class="col-md-10">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <span id="photo-lock-status" class="badge {{ @$driver->is_photo_locked ? 'bg-danger' : 'bg-success' }}">
+                                                {{ @$driver->is_photo_locked ? 'Locked' : 'Unlocked' }}
+                                            </span>
+                                            <button type="button" id="toggle-photo-lock" 
+                                                class="btn btn-sm {{ @$driver->is_photo_locked ? 'btn-success' : 'btn-danger' }}"
+                                                data-locked="{{ @$driver->is_photo_locked ? '1' : '0' }}"
+                                                data-driver-id="{{ $driver->id }}">
+                                                <i class="{{ @$driver->is_photo_locked ? 'ri-lock-unlock-line' : 'ri-lock-line' }}"></i>
+                                                {{ @$driver->is_photo_locked ? 'Unlock Photo' : 'Lock Photo' }}
+                                            </button>
+                                        </div>
+                                        <small class="text-muted d-block mt-1">
+                                            When locked, the driver cannot change their profile photo from the app.
+                                            @if(@$driver->photo_locked_at)
+                                                <br>Locked on: {{ \Carbon\Carbon::parse($driver->photo_locked_at)->format('M d, Y H:i') }}
+                                            @endif
+                                        </small>
+                                    </div>
+                                </div>
+                                @endif
+
                                 <div class="form-group row">
                                     <div class="col-12">
                                         <div class="submit-btn">
@@ -1118,6 +1144,54 @@
             $.validator.addMethod("notOnlyNumeric", function(value, element) {
                 return this.optional(element) || !/^\d+$/.test(value);
             }, "This field cannot contain only numbers.");
+
+            // Photo Lock Toggle
+            $('#toggle-photo-lock').on('click', function() {
+                const btn = $(this);
+                const driverId = btn.data('driver-id');
+                const isLocked = btn.data('locked') === '1' || btn.data('locked') === 1;
+                const action = isLocked ? 'unlock' : 'lock';
+                const url = `/admin/driver/${driverId}/${action}-photo`;
+                
+                btn.prop('disabled', true).html('<i class="ri-loader-4-line ri-spin"></i> Processing...');
+                
+                $.ajax({
+                    url: url,
+                    type: 'PUT',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') || '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            const newLocked = !isLocked;
+                            btn.data('locked', newLocked ? '1' : '0');
+                            btn.removeClass('btn-success btn-danger')
+                               .addClass(newLocked ? 'btn-success' : 'btn-danger')
+                               .html(`<i class="${newLocked ? 'ri-lock-unlock-line' : 'ri-lock-line'}"></i> ${newLocked ? 'Unlock Photo' : 'Lock Photo'}`);
+                            
+                            $('#photo-lock-status')
+                                .removeClass('bg-success bg-danger')
+                                .addClass(newLocked ? 'bg-danger' : 'bg-success')
+                                .text(newLocked ? 'Locked' : 'Unlocked');
+                            
+                            alert(response.message || `Photo ${action}ed successfully`);
+                        } else {
+                            alert(response.message || 'Failed to update photo lock status');
+                            btn.prop('disabled', false)
+                               .html(`<i class="${isLocked ? 'ri-lock-unlock-line' : 'ri-lock-line'}"></i> ${isLocked ? 'Unlock Photo' : 'Lock Photo'}`);
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error('Error:', xhr);
+                        alert('Failed to update photo lock status. Please try again.');
+                        btn.prop('disabled', false)
+                           .html(`<i class="${isLocked ? 'ri-lock-unlock-line' : 'ri-lock-line'}"></i> ${isLocked ? 'Unlock Photo' : 'Lock Photo'}`);
+                    },
+                    complete: function() {
+                        btn.prop('disabled', false);
+                    }
+                });
+            });
 
             $('#driverForm').validate({
                 ignore: [],
