@@ -170,18 +170,20 @@
                         <span class="invalid-feedback d-error" id="charge_goes_to_error"></span>
                     </div>
                 </div>
-                <div class="modal-footer d-flex justify-content-between w-100">
-                    <div id="tieredPricingContainer">
-                        <a href="#" id="tieredPricingLink" class="btn btn-outline-info d-none" target="_blank">
-                            <i class="ri-price-tag-3-line"></i> Manage Tiered Pricing
-                        </a>
-                        <span id="tieredPricingPlaceholder" class="text-muted small">
-                            <i class="ri-information-line"></i> Save prices first to enable tiered pricing
-                        </span>
-                    </div>
-                    <div>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="savePriceBtn">Save Prices</button>
+                <div class="modal-footer">
+                    <div class="d-flex justify-content-between w-100 align-items-center">
+                        <div id="tieredPricingContainer">
+                            <a href="#" id="tieredPricingLink" class="btn btn-outline-primary" style="display: none;" target="_blank">
+                                <i class="ri-price-tag-3-line me-1"></i> Manage Tiered Pricing
+                            </a>
+                            <span id="tieredPricingPlaceholder" class="text-muted small fst-italic">
+                                <i class="ri-information-line me-1"></i> Save prices first to enable tiered pricing
+                            </span>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="savePriceBtn">Save Prices</button>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -270,14 +272,16 @@
                             
                             // Show tiered pricing link, hide placeholder
                             var tieredUrl = '{{ url("admin/tiered-pricing") }}/' + data.vehicleTypeZone.id;
-                            $('#tieredPricingLink').attr('href', tieredUrl).removeClass('d-none');
-                            $('#tieredPricingPlaceholder').addClass('d-none');
+                            console.log('Showing tiered pricing link with URL:', tieredUrl);
+                            document.getElementById('tieredPricingLink').href = tieredUrl;
+                            document.getElementById('tieredPricingLink').style.display = 'inline-block';
+                            document.getElementById('tieredPricingPlaceholder').style.display = 'none';
                         } else {
                            $('#priceId').val('');
                            $('#commission_rate_field').hide();
                            // Hide tiered pricing link, show placeholder
-                           $('#tieredPricingLink').addClass('d-none');
-                           $('#tieredPricingPlaceholder').removeClass('d-none');
+                           document.getElementById('tieredPricingLink').style.display = 'none';
+                           document.getElementById('tieredPricingPlaceholder').style.display = 'inline';
                         }
 
                         // Show modal only after data is set
@@ -349,8 +353,10 @@
                              if (savedPriceId) {
                                  $('#priceId').val(savedPriceId);
                                  var tieredUrl = '{{ url("admin/tiered-pricing") }}/' + savedPriceId;
-                                 $('#tieredPricingLink').attr('href', tieredUrl).removeClass('d-none');
-                                 $('#tieredPricingPlaceholder').addClass('d-none');
+                                 console.log('After save - showing tiered pricing link with URL:', tieredUrl);
+                                 document.getElementById('tieredPricingLink').href = tieredUrl;
+                                 document.getElementById('tieredPricingLink').style.display = 'inline-block';
+                                 document.getElementById('tieredPricingPlaceholder').style.display = 'none';
                              }
                              
                              // Handle preferences update if price already existed
