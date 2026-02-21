@@ -378,7 +378,7 @@
                                         <a href="#" id="tieredPricingLink" class="btn btn-outline-primary btn-sm" style="display: none;" target="_blank">
                                             <i class="ri-price-tag-3-line me-1"></i> Manage Tiered Pricing
                                         </a>
-                                        <span id="tieredPricingPlaceholder" class="text-muted small fst-italic d-none d-md-inline">
+                                        <span id="tieredPricingPlaceholder" class="text-muted small fst-italic" style="display: inline;">
                                             <i class="ri-information-line me-1"></i> Save prices first to enable tiered pricing
                                         </span>
                                     </div>
