@@ -91,6 +91,21 @@
                     </div>
 
                     <div class="form-group row">
+                        <label class="col-md-2" for="external_url">External URL (Link)</label>
+                        <div class="col-md-10">
+                            <input class="form-control" type="url" name="external_url" id="external_url"
+                                value="{{ isset($banner->external_url) ? $banner->external_url : old('external_url') }}"
+                                placeholder="https://example.com">
+                            <small class="text-muted">When users tap on this banner, they will be redirected to this URL</small>
+                            @error('external_url')
+                                <span class="invalid-feedback d-block" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
                         <label class="col-md-2"
                             for="zone">{{ __('taxido::static.service_categories.services') }} <span>
                                 *</span></label>

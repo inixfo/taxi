@@ -321,6 +321,34 @@ class RideRepository extends BaseRepository
                 $this->updateRideStatusActivities($ride, $request['status']);
             }
 
+            // Handle parcel photos upload for parcel service
+            if ($ride->service && $ride->service->type == ServicesEnum::PARCEL) {
+                $httpRequest = request();
+                
+                // Handle pickup photo
+                if ($httpRequest->hasFile('pickup_photo')) {
+                    $attachment = createAttachment();
+                    $attachmentId = addMedia($attachment, $httpRequest->file('pickup_photo'), 'parcel_photos')?->id;
+                    if ($attachmentId) {
+                        $ride->update([
+                            'pickup_photo_id' => $attachmentId,
+                            'pickup_photo_taken_at' => now(),
+                        ]);
+                    }
+                }
+                
+                // Handle dropoff photo
+                if ($httpRequest->hasFile('dropoff_photo')) {
+                    $attachment = createAttachment();
+                    $attachmentId = addMedia($attachment, $httpRequest->file('dropoff_photo'), 'parcel_photos')?->id;
+                    if ($attachmentId) {
+                        $ride->update([
+                            'dropoff_photo_id' => $attachmentId,
+                            'dropoff_photo_taken_at' => now(),
+                        ]);
+                    }
+                }
+            }
 
             DB::commit();
             $ride = $ride->refresh();

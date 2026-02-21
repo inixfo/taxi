@@ -563,6 +563,88 @@
                         </div>
                     </div>
                 </div>
+
+                {{-- Parcel Security Photos --}}
+                @if ($ride->pickup_photo || $ride->dropoff_photo)
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header card-no-border">
+                            <div class="header-top">
+                                <h5 class="m-0"><i class="ri-camera-line me-2"></i>{{ __('taxido::static.rides.parcel_security_photos') ?? 'Parcel Security Photos' }}</h5>
+                            </div>
+                        </div>
+                        <div class="card-body pt-0">
+                            <div class="row">
+                                {{-- Pickup Photo --}}
+                                <div class="col-md-6 mb-3">
+                                    <div class="parcel-photo-card">
+                                        <h6 class="mb-2">
+                                            <i class="ri-map-pin-line text-success"></i>
+                                            {{ __('taxido::static.rides.pickup_photo') ?? 'Pickup Photo' }}
+                                        </h6>
+                                        @if ($ride->pickup_photo)
+                                            <div class="photo-container" style="border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+                                                <a href="{{ $ride->pickup_photo->original_url }}" target="_blank" title="Click to view full size">
+                                                    <img src="{{ $ride->pickup_photo->original_url }}" 
+                                                         class="img-fluid" 
+                                                         alt="Pickup Photo"
+                                                         style="max-height: 200px; width: 100%; object-fit: cover;">
+                                                </a>
+                                            </div>
+                                            @if ($ride->pickup_photo_taken_at)
+                                            <small class="text-muted d-block mt-1">
+                                                <i class="ri-time-line"></i>
+                                                {{ \Carbon\Carbon::parse($ride->pickup_photo_taken_at)->format('M d, Y H:i') }}
+                                            </small>
+                                            @endif
+                                        @else
+                                            <div class="text-muted text-center p-4" style="background: #f8f9fa; border-radius: 8px;">
+                                                <i class="ri-image-line" style="font-size: 2rem;"></i>
+                                                <p class="mb-0 mt-2">{{ __('taxido::static.rides.no_pickup_photo') ?? 'No pickup photo available' }}</p>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                                
+                                {{-- Dropoff Photo --}}
+                                <div class="col-md-6 mb-3">
+                                    <div class="parcel-photo-card">
+                                        <h6 class="mb-2">
+                                            <i class="ri-flag-line text-danger"></i>
+                                            {{ __('taxido::static.rides.dropoff_photo') ?? 'Dropoff Photo' }}
+                                        </h6>
+                                        @if ($ride->dropoff_photo)
+                                            <div class="photo-container" style="border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+                                                <a href="{{ $ride->dropoff_photo->original_url }}" target="_blank" title="Click to view full size">
+                                                    <img src="{{ $ride->dropoff_photo->original_url }}" 
+                                                         class="img-fluid" 
+                                                         alt="Dropoff Photo"
+                                                         style="max-height: 200px; width: 100%; object-fit: cover;">
+                                                </a>
+                                            </div>
+                                            @if ($ride->dropoff_photo_taken_at)
+                                            <small class="text-muted d-block mt-1">
+                                                <i class="ri-time-line"></i>
+                                                {{ \Carbon\Carbon::parse($ride->dropoff_photo_taken_at)->format('M d, Y H:i') }}
+                                            </small>
+                                            @endif
+                                        @else
+                                            <div class="text-muted text-center p-4" style="background: #f8f9fa; border-radius: 8px;">
+                                                <i class="ri-image-line" style="font-size: 2rem;"></i>
+                                                <p class="mb-0 mt-2">{{ __('taxido::static.rides.no_dropoff_photo') ?? 'No dropoff photo available' }}</p>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alert alert-info mt-2 mb-0">
+                                <i class="ri-information-line"></i>
+                                <small>{{ __('taxido::static.rides.parcel_photos_info') ?? 'These photos are captured by the driver at pickup and dropoff locations for parcel security verification.' }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
             @endif
 
             @if (in_array($ride?->service_category?->slug, [ServiceCategoryEnum::RENTAL]))

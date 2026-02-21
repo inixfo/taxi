@@ -33,6 +33,7 @@ class Banner extends Model implements HasMedia
         'title',
         'slug',
         'banner_image_id',
+        'external_url',
         'order',
         'status',
         'created_by_id'
@@ -41,7 +42,8 @@ class Banner extends Model implements HasMedia
     protected $visible = [
         'title',
         'order',
-        'status'
+        'status',
+        'external_url'
     ];
 
     protected $casts = [

@@ -22,6 +22,12 @@
                 </div>
             </div>
 
+            <div class="alert alert-info mb-3">
+                <i class="ri-information-line"></i>
+                <strong>Tiered Pricing:</strong> To configure distance-based pricing tiers (e.g. £3/mile for 0-1 miles, £2.50/mile for 1-3 miles), 
+                click "Set Price" on a zone, save the base pricing, then click the <strong>"Manage Tiered Pricing"</strong> button in the modal footer.
+            </div>
+
             <div class="vehicle-type-zone-table">
                 <div class="table-main">
                     <div id="success-message" class="alert alert-success d-none"></div>

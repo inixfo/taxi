@@ -92,6 +92,11 @@ class Ride extends Model
 
         'start_ride_locations',
         'start_ride_coordinates',
+        'pickup_photo_id',
+        'pickup_photo_taken_at',
+        'dropoff_photo_id',
+        'dropoff_photo_taken_at',
+        'is_parcel_photos_required',
     ];
 
     protected $hidden = [
@@ -135,6 +140,11 @@ class Ride extends Model
 
         'start_ride_locations' => 'json',
         'start_ride_coordinates' => 'json',
+        'pickup_photo_id' => 'integer',
+        'pickup_photo_taken_at' => 'datetime',
+        'dropoff_photo_id' => 'integer',
+        'dropoff_photo_taken_at' => 'datetime',
+        'is_parcel_photos_required' => 'boolean',
     ];
 
     public static function boot()
@@ -281,6 +291,22 @@ class Ride extends Model
     public function cargo_image(): BelongsTo
     {
         return $this->belongsTo(Attachment::class, 'cargo_image_id');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function pickup_photo(): BelongsTo
+    {
+        return $this->belongsTo(Attachment::class, 'pickup_photo_id');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function dropoff_photo(): BelongsTo
+    {
+        return $this->belongsTo(Attachment::class, 'dropoff_photo_id');
     }
 
     /**
