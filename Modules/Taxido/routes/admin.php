@@ -456,5 +456,33 @@ Route::group(['middleware' => ['localization'], 'namespace' => 'Admin', 'as' => 
 
     // Referral
     Route::get('referral', 'ReferralController@index')->name('referral.index')->middleware('can:cab_referral.index');
+
+    // Tiered Pricing
+    Route::get('tiered-pricing/{vehicleTypeZoneId}', 'TieredPricingController@index')->name('tiered-pricing.index')->middleware('can:vehicle_type.index');
+    Route::post('tiered-pricing', 'TieredPricingController@store')->name('tiered-pricing.store')->middleware('can:vehicle_type.create');
+    Route::put('tiered-pricing/{id}', 'TieredPricingController@update')->name('tiered-pricing.update')->middleware('can:vehicle_type.edit');
+    Route::delete('tiered-pricing/{id}', 'TieredPricingController@destroy')->name('tiered-pricing.destroy')->middleware('can:vehicle_type.destroy');
+    Route::put('tiered-pricing/{id}/toggle-status', 'TieredPricingController@toggleStatus')->name('tiered-pricing.toggle-status')->middleware('can:vehicle_type.edit');
+    Route::post('tiered-pricing/create-default', 'TieredPricingController@createDefaultTiers')->name('tiered-pricing.create-default')->middleware('can:vehicle_type.create');
+
+    // Audit Logs
+    Route::get('audit-logs', 'AuditLogController@index')->name('audit-logs.index')->middleware('can:activity_log.index');
+    Route::get('audit-logs/{id}', 'AuditLogController@show')->name('audit-logs.show')->middleware('can:activity_log.index');
+    Route::post('audit-logs/for-model', 'AuditLogController@forModel')->name('audit-logs.for-model')->middleware('can:activity_log.index');
+    Route::get('audit-logs-export', 'AuditLogController@export')->name('audit-logs.export')->middleware('can:activity_log.index');
+
+    // Driver Payouts
+    Route::get('driver-payouts', 'DriverPayoutController@index')->name('driver-payouts.index')->middleware('can:withdraw_request.index');
+    Route::get('driver-payouts/{id}', 'DriverPayoutController@show')->name('driver-payouts.show')->middleware('can:withdraw_request.index');
+    Route::post('driver-payouts/generate-weekly', 'DriverPayoutController@generateWeeklyPayouts')->name('driver-payouts.generate-weekly')->middleware('can:withdraw_request.create');
+    Route::post('driver-payouts/{id}/process', 'DriverPayoutController@processPayout')->name('driver-payouts.process')->middleware('can:withdraw_request.edit');
+    Route::post('driver-payouts/process-all', 'DriverPayoutController@processAllPending')->name('driver-payouts.process-all')->middleware('can:withdraw_request.edit');
+    Route::post('driver-payouts/{id}/retry', 'DriverPayoutController@retryPayout')->name('driver-payouts.retry')->middleware('can:withdraw_request.edit');
+    Route::delete('driver-payouts/{id}/cancel', 'DriverPayoutController@cancelPayout')->name('driver-payouts.cancel')->middleware('can:withdraw_request.destroy');
+    Route::get('driver-payouts-export', 'DriverPayoutController@export')->name('driver-payouts.export')->middleware('can:withdraw_request.index');
+
+    // Driver Photo Lock/Unlock
+    Route::put('driver/{id}/lock-photo', 'DriverController@lockPhoto')->name('driver.lock-photo')->middleware('can:driver.edit');
+    Route::put('driver/{id}/unlock-photo', 'DriverController@unlockPhoto')->name('driver.unlock-photo')->middleware('can:driver.edit');
   });
 });
