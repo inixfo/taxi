@@ -329,50 +329,57 @@
                      data: manualData,
                      dataType: 'json',
                      success: function(data) {
-                         // After successful price update, update preferences
-                         if (data.success && priceId) {
-                             const preferencesData = {
-                                 allow_preference: $('#allow_preference').prop('checked'),
-                                 preferences: []
-                             };
-
-                             if (preferencesData.allow_preference) {
-                                 $form.find('.preference-item').each(function() {
-                                     preferencesData.preferences.push({
-                                         preference_id: $(this).find('[name$="[preference_id]"]').val(),
-                                         price: $(this).find('[name$="[price]"]').val()
-                                     });
-                                 });
-                             }
-
-                             $.ajax({
-                                 url: `{{ url('/admin/vehicle-type-zone') }}/${priceId}/preferences`,
-                                 method: 'PUT',
-                                 headers: {
-                                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                                     'Accept': 'application/json'
-                                 },
-                                 data: preferencesData,
-                                 dataType: 'json',
-                                 success: function(prefData) {
-                                     showMessage($successMessage, 'Price and preferences saved successfully!');
-                                     $priceModal.modal('hide');
-                                 },
-                                 error: function(xhr) {
-                                     if (xhr.status === 422) {
-                                         showErrors(xhr.responseJSON.errors);
-                                     } else {
-                                         showMessage($errorMessage, 'Error saving preferences data.');
-                                     }
-                                 }
-                             });
-                         } else {
                          $saveButton.html('Save Prices');
                          $saveButton.prop('disabled', false);
                          $closeButton.prop('disabled', false);
+                         
                          if (data.success) {
-                             showMessage($successMessage, 'Price saved successfully!');
-                             $priceModal.modal('hide');
+                             // Get the price ID (either existing or newly created)
+                             const savedPriceId = priceId || data.vehicleTypeZone?.id || data.id;
+                             
+                             // Show tiered pricing link after successful save
+                             if (savedPriceId) {
+                                 $('#priceId').val(savedPriceId);
+                                 $('#tieredPricingLink')
+                                     .attr('href', '{{ url("admin/tiered-pricing") }}/' + savedPriceId)
+                                     .removeClass('d-none');
+                             }
+                             
+                             // Handle preferences update if price already existed
+                             if (priceId) {
+                                 const preferencesData = {
+                                     allow_preference: $('#allow_preference').prop('checked'),
+                                     preferences: []
+                                 };
+
+                                 if (preferencesData.allow_preference) {
+                                     $form.find('.preference-item').each(function() {
+                                         preferencesData.preferences.push({
+                                             preference_id: $(this).find('[name$="[preference_id]"]').val(),
+                                             price: $(this).find('[name$="[price]"]').val()
+                                         });
+                                     });
+                                 }
+
+                                 $.ajax({
+                                     url: `{{ url('/admin/vehicle-type-zone') }}/${priceId}/preferences`,
+                                     method: 'PUT',
+                                     headers: {
+                                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                                         'Accept': 'application/json'
+                                     },
+                                     data: preferencesData,
+                                     dataType: 'json',
+                                     success: function(prefData) {
+                                         showMessage($successMessage, 'Price and preferences saved successfully!');
+                                     },
+                                     error: function(xhr) {
+                                         console.log('Preferences save error:', xhr.responseText);
+                                     }
+                                 });
+                             }
+                             
+                             showMessage($successMessage, 'Price saved successfully! You can now manage tiered pricing.');
                          } else {
                              showErrors(data.errors);
                          }
