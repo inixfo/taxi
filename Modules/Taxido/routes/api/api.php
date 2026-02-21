@@ -36,10 +36,10 @@ Route::group(['middleware' => ['localization']], function () {
     Route::delete('driver/deleteAccount', 'DriverAuthController@deleteAccount');
     Route::post('driver/firebase/auth', 'DriverAuthController@verifyFirebaseAuthToken')->middleware('throttle:5,1');
 
-    // Fleet Authentication
-    Route::post('fleet/login', 'FleetAuthController@login')->middleware('throttle:5,1');
-    Route::post('fleet/verify-token', 'FleetAuthController@verifyFleetToken')->middleware('throttle:5,1');
-    Route::post('fleet/register', 'FleetAuthController@fleetRegister')->middleware('throttle:5,1');
+    // Fleet Authentication (Disabled - Fleet functionality removed)
+    Route::post('fleet/login', 'FleetAuthController@login')->middleware(['fleet.disabled', 'throttle:5,1']);
+    Route::post('fleet/verify-token', 'FleetAuthController@verifyFleetToken')->middleware(['fleet.disabled', 'throttle:5,1']);
+    Route::post('fleet/register', 'FleetAuthController@fleetRegister')->middleware(['fleet.disabled', 'throttle:5,1']);
 
     // Settings
     Route::get('taxido/settings', 'SettingController@index');

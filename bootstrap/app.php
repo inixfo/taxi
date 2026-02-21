@@ -22,7 +22,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'Menu' => App\Facades\WMenu::class,
             'localization' => App\Http\Middleware\Localization::class,
             'demo' => App\Http\Middleware\PreventRequestsDuringDemo::class,
-            'maintenance' => App\Http\Middleware\CheckMaintenanceMode::class
+            'maintenance' => App\Http\Middleware\CheckMaintenanceMode::class,
+            'rate.limit' => App\Http\Middleware\RateLimitMiddleware::class,
+            'stripe.webhook' => App\Http\Middleware\VerifyStripeWebhook::class,
+            'fleet.disabled' => App\Http\Middleware\FleetDisabled::class,
         ]);
     })?->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (AuthorizationException $exception, Request $request) {
