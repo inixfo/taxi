@@ -7,6 +7,7 @@ use App\Services\BadgeResolver;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Modules\Taxido\Enums\RideStatusEnum;
+use Modules\Taxido\Enums\ServicesEnum;
 use Modules\Taxido\Http\Middleware\TaxidoAuthMiddleware;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
@@ -167,6 +168,7 @@ class RouteServiceProvider extends ServiceProvider
             add_menu(label: 'taxido::static.rides.rides', module_slug: 'taxido', slug:'tx_ride', icon:'ri-map-2-line', section:'static.home', position:10, permission:'ride.index');
             add_menu(label: 'taxido::static.rides.ride_requests', route:'admin.ride-request.index', parent_slug: 'tx_ride', module_slug: 'taxido', slug:'tx_all_ride_requests', icon: 'ri-traffic-light-line', section:'static.home', permission:'ride_request.index');
             add_menu(label: 'taxido::static.rides.all', route:'admin.ride.index', parent_slug: 'tx_ride', module_slug: 'taxido', slug:'tx_all_rides', icon: 'ri-traffic-light-line', section:'static.home', permission:'ride.index');
+            add_menu(label: 'taxido::static.rides.parcel_rides', route:'admin.ride.service.filter', params:['service' => ServicesEnum::PARCEL], parent_slug: 'tx_ride', module_slug: 'taxido', slug:'tx_parcel_rides', icon: 'ri-box-3-line', section:'static.home', permission:'ride.index', badge: 0, badgeable: true);
             add_menu(label: 'taxido::static.rides.scheduled', route:'admin.ride.status.filter', params:['status' => RideStatusEnum::SCHEDULED], parent_slug: 'tx_ride', module_slug: 'taxido', slug:'tx_scheduled_rides', icon: 'ri-traffic-light-line', section:'static.home', permission:'ride.index', badge: 0, badgeable: true); // getTotalRidesByStatus(RideStatusEnum::SCHEDULED)
             add_menu(label: 'taxido::static.rides.accepted', route:'admin.ride.status.filter', params:['status' => RideStatusEnum::ACCEPTED], parent_slug: 'tx_ride', module_slug: 'taxido', slug:'tx_accepted_rides', icon: 'ri-traffic-light-line', section:'static.home', permission:'ride.index', badge: 0, badgeable: true); // getTotalRidesByStatus(RideStatusEnum::ACCEPTED)
             add_menu(label: 'taxido::static.rides.arrived', route: 'admin.ride.status.filter',  params:['status' => RideStatusEnum::ARRIVED], parent_slug: 'tx_ride', module_slug: 'taxido', slug: 'tx_arrived_rides', icon: 'ri-traffic-light-line', section: 'static.home', permission: 'ride.index', badge: 0, badgeable: true); // getTotalRidesByStatus(RideStatusEnum::ARRIVED)

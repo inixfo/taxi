@@ -170,13 +170,18 @@
                         <span class="invalid-feedback d-error" id="charge_goes_to_error"></span>
                     </div>
                 </div>
-                <div class="modal-footer justify-content-between">
-                    <a href="#" id="tieredPricingLink" class="btn btn-outline-info d-none" target="_blank">
-                        <i class="ri-price-tag-3-line"></i> Manage Tiered Pricing
-                    </a>
-                    <div>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="savePriceBtn">Save Prices</button>
+                <div class="modal-footer">
+                    <div class="d-flex justify-content-between w-100 align-items-center">
+                        <a href="#" id="tieredPricingLink" class="btn btn-outline-info" style="display: none;" target="_blank">
+                            <i class="ri-price-tag-3-line"></i> Manage Tiered Pricing
+                        </a>
+                        <span id="tieredPricingPlaceholder" class="text-muted small">
+                            <i class="ri-information-line"></i> Save prices first to enable tiered pricing
+                        </span>
+                        <div>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="savePriceBtn">Save Prices</button>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -263,14 +268,17 @@
                             $('#commission_rate').val(data.vehicleTypeZone.commission_rate);
                             window?.selectCommissionTypeField(data.vehicleTypeZone.commission_type);
                             
-                            // Show tiered pricing link
+                            // Show tiered pricing link, hide placeholder
                             $('#tieredPricingLink')
                                 .attr('href', '{{ url("admin/tiered-pricing") }}/' + data.vehicleTypeZone.id)
-                                .removeClass('d-none');
+                                .show();
+                            $('#tieredPricingPlaceholder').hide();
                         } else {
                            $('#priceId').val('');
                            $('#commission_rate_field').hide();
-                           $('#tieredPricingLink').addClass('d-none');
+                           // Hide tiered pricing link, show placeholder
+                           $('#tieredPricingLink').hide();
+                           $('#tieredPricingPlaceholder').show();
                         }
 
                         // Show modal only after data is set
@@ -336,13 +344,15 @@
                          if (data.success) {
                              // Get the price ID (either existing or newly created)
                              const savedPriceId = priceId || data.vehicleTypeZone?.id || data.id;
+                             console.log('Price saved successfully, ID:', savedPriceId);
                              
                              // Show tiered pricing link after successful save
                              if (savedPriceId) {
                                  $('#priceId').val(savedPriceId);
                                  $('#tieredPricingLink')
                                      .attr('href', '{{ url("admin/tiered-pricing") }}/' + savedPriceId)
-                                     .removeClass('d-none');
+                                     .show();
+                                 $('#tieredPricingPlaceholder').hide();
                              }
                              
                              // Handle preferences update if price already existed

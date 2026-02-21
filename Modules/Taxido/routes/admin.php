@@ -380,6 +380,7 @@ Route::group(['middleware' => ['localization'], 'namespace' => 'Admin', 'as' => 
     Route::resource('ride', 'RideController', ['except' => ['show', 'destroy']]);
     Route::get('ride/details/{ride_number}', 'RideController@details')->name('ride.details')->middleware('can:ride.index');
     Route::get('ride/status/{status}', 'RideController@getRidesByStatus')->name('ride.status.filter')->middleware('can:ride.index');
+    Route::get('ride/service/{service}', 'RideController@getRidesByService')->name('ride.service.filter')->middleware('can:ride.index');
     Route::get('ride/export', 'RideController@export')->name('ride.export')->middleware('can:ride.index');
 
     // Ride Requests

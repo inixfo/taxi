@@ -65,6 +65,11 @@ class RideTable
             $rides->where('rides.ride_status_id', getRideStatusIdByName($this->request->status));
         }
 
+        // Filter by service type from route parameter
+        if ($this->request?->service) {
+            $rides->where('rides.service_id', getServiceIdBySlug($this->request->service));
+        }
+
         if ($this->request->has('filter') && $this->request->get('filter') !== 'all') {
             $rides->where('rides.service_id', getServiceIdBySlug($this->request->filter));
         }

@@ -979,6 +979,7 @@ return array(
     'accepted' => 'Accepted Rides',
     'started' => 'Started Rides',
     'arrived' => 'Arrived Rides',
+    'parcel_rides' => 'Parcel Rides',
     'pos' => 'POS',
     'hourly_package' => 'Hourly Package',
     'select_package' => 'Select Hourly Package',

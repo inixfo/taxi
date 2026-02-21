@@ -31,6 +31,11 @@ class RideController extends Controller
         return $this->repository->index($rideTable->generate());
     }
 
+    public function getRidesByService(RideTable $rideTable)
+    {
+        return $this->repository->index($rideTable->generate());
+    }
+
     public function details(Request $request)
     {
         return $this->repository->details($request->ride_number);
