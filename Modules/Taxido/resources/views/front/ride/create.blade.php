@@ -300,7 +300,7 @@ $settings = getTaxidoSettings();
 @push('scripts')
 <!-- Select2 -->
 <script src="{{ asset('js/select2.full.min.js') }}"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAP_API_KEY') }}&libraries=places,geometry,drawing&callback=initMap" defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ $settings['location']['google_map_api_key'] ?? env('GOOGLE_MAP_API_KEY') }}&libraries=places,geometry,drawing&callback=initMap" defer></script>
 
 <!-- Firebase SDK -->
 <script src="{{ asset('js/firebase/firebase-app-compat.js')}}"></script>
@@ -405,7 +405,7 @@ $settings = getTaxidoSettings();
 
           // Reverse geocode to get address
           $.ajax({
-            url: "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + userLatLng.lat + "," + userLatLng.lng + "&key={{ env('GOOGLE_MAP_API_KEY') }}",
+            url: "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + userLatLng.lat + "," + userLatLng.lng + "&key={{ $settings['location']['google_map_api_key'] ?? env('GOOGLE_MAP_API_KEY') }}",
             type: "GET",
             success: function(response) {
               if (response.results && response.results?.length > 0) {

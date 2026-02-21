@@ -16,7 +16,8 @@ class FareCalculationService
 
     public function __construct()
     {
-        $this->googleMapsApiKey = env('GOOGLE_MAP_API_KEY');
+        $settings = getTaxidoSettings();
+        $this->googleMapsApiKey = $settings['location']['google_map_api_key'] ?? env('GOOGLE_MAP_API_KEY');
     }
 
     /**

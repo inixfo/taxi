@@ -572,7 +572,7 @@
 
     <!-- Dynamic Map Provider Scripts -->
     @if ($settings['location']['map_provider'] == 'google_map')
-        <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAP_API_KEY') }}&libraries=geometry,places,marker&v=beta"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key={{ $settings['location']['google_map_api_key'] ?? env('GOOGLE_MAP_API_KEY') }}&libraries=geometry,places,marker&v=beta"></script>
     @elseif ($settings['location']['map_provider'] == 'osm')
         <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
         <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>

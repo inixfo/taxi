@@ -525,7 +525,7 @@ $ambulances = getAmbulances();
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAP_API_KEY') }}&libraries=places,geometry,drawing&callback=initMap" defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ getTaxidoSettings()['location']['google_map_api_key'] ?? env('GOOGLE_MAP_API_KEY') }}&libraries=places,geometry,drawing&callback=initMap" defer></script>
 
 <!-- Firebase SDK (included for compatibility, though not used directly) -->
 <script src="{{ asset('js/firebase/firebase-app-compat.js')}}"></script>

@@ -1,5 +1,5 @@
 <script async
-    src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAP_API_KEY') }}&loading=async&libraries=visualization&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key={{ getTaxidoSettings()['location']['google_map_api_key'] ?? env('GOOGLE_MAP_API_KEY') }}&loading=async&libraries=visualization&callback=initMap">
 </script>
 
 <script>

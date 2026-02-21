@@ -1626,7 +1626,8 @@ if (! function_exists('getDriverById')) {
 if (!function_exists('calculateRideDistance')) {
     function calculateRideDistance(array $locations, $units = '')
     {
-        $apiKey = env('GOOGLE_MAP_API_KEY');
+        $settings = getTaxidoSettings();
+        $apiKey = $settings['location']['google_map_api_key'] ?? env('GOOGLE_MAP_API_KEY');
         $url    = "https://maps.googleapis.com/maps/api/distancematrix/json";
         $distanceUnit = '';
         if ($units === 'mile') {

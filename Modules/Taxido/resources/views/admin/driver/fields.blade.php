@@ -807,7 +807,7 @@
 @push('scripts')
 <script src="{{ asset('js/firebase/firebase-app-compat.js')}}"></script>
 <script src="{{ asset('js/firebase/firebase-firestore-compat.js')}}"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAP_API_KEY') }}&libraries=places"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ getTaxidoSettings()['location']['google_map_api_key'] ?? env('GOOGLE_MAP_API_KEY') }}&libraries=places"></script>
 <script>
     // Firebase configuration
     const firebaseConfig = {
