@@ -26,12 +26,12 @@ return new class extends Migration
 
             $table->foreign('pickup_photo_id')
                 ->references('id')
-                ->on('attachments')
+                ->on('media')
                 ->onDelete('set null');
 
             $table->foreign('dropoff_photo_id')
                 ->references('id')
-                ->on('attachments')
+                ->on('media')
                 ->onDelete('set null');
         });
     }

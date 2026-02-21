@@ -170,9 +170,14 @@
                         <span class="invalid-feedback d-error" id="charge_goes_to_error"></span>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="savePriceBtn">Save Prices</button>
+                <div class="modal-footer justify-content-between">
+                    <a href="#" id="tieredPricingLink" class="btn btn-outline-info d-none" target="_blank">
+                        <i class="ri-price-tag-3-line"></i> Manage Tiered Pricing
+                    </a>
+                    <div>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="savePriceBtn">Save Prices</button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -239,28 +244,34 @@
                          }
 
                          $('.invalid-feedback').addClass('d-none');
-                         // Populate form if data exists
-                         if (data?.vehicleTypeZone) {
-                             $('#priceId').val(data.vehicleTypeZone.id);
-                             $('#base_fare_charge').val(data.vehicleTypeZone.base_fare_charge);
-                             $('#base_distance').val(data.vehicleTypeZone.base_distance);
-                             $('#per_distance_charge').val(data.vehicleTypeZone.per_distance_charge);
-                             $('#per_minute_charge').val(data.vehicleTypeZone.per_minute_charge);
-                             $('#per_weight_charge').val(data.vehicleTypeZone.per_weight_charge || '');
-                             $('#waiting_charge').val(data.vehicleTypeZone.waiting_charge || '');
-                             $('#free_waiting_time_before_start_ride').val(data.vehicleTypeZone.free_waiting_time_before_start_ride || '');
-                             $('#free_waiting_time_after_start_ride').val(data.vehicleTypeZone.free_waiting_time_after_start_ride || '');
-                             $('#is_allow_airport_charge').val(data.vehicleTypeZone.is_allow_airport_charge);
-                             $('#cancellation_charge_for_rider').val(data.vehicleTypeZone.cancellation_charge_for_rider || '');
-                             $('#cancellation_charge_for_driver').val(data.vehicleTypeZone.cancellation_charge_for_driver || '');
-                             $('#charge_goes_to').val(data.vehicleTypeZone.charge_goes_to);
-                             $('#commission_type').val(data.vehicleTypeZone.commission_type);
-                             $('#commission_rate').val(data.vehicleTypeZone.commission_rate);
-                             window?.selectCommissionTypeField(data.vehicleTypeZone.commission_type);
-                         } else {
-                            $('#priceId').val('');
-                            $('#commission_rate_field').hide();
-                         }
+                        // Populate form if data exists
+                        if (data?.vehicleTypeZone) {
+                            $('#priceId').val(data.vehicleTypeZone.id);
+                            $('#base_fare_charge').val(data.vehicleTypeZone.base_fare_charge);
+                            $('#base_distance').val(data.vehicleTypeZone.base_distance);
+                            $('#per_distance_charge').val(data.vehicleTypeZone.per_distance_charge);
+                            $('#per_minute_charge').val(data.vehicleTypeZone.per_minute_charge);
+                            $('#per_weight_charge').val(data.vehicleTypeZone.per_weight_charge || '');
+                            $('#waiting_charge').val(data.vehicleTypeZone.waiting_charge || '');
+                            $('#free_waiting_time_before_start_ride').val(data.vehicleTypeZone.free_waiting_time_before_start_ride || '');
+                            $('#free_waiting_time_after_start_ride').val(data.vehicleTypeZone.free_waiting_time_after_start_ride || '');
+                            $('#is_allow_airport_charge').val(data.vehicleTypeZone.is_allow_airport_charge);
+                            $('#cancellation_charge_for_rider').val(data.vehicleTypeZone.cancellation_charge_for_rider || '');
+                            $('#cancellation_charge_for_driver').val(data.vehicleTypeZone.cancellation_charge_for_driver || '');
+                            $('#charge_goes_to').val(data.vehicleTypeZone.charge_goes_to);
+                            $('#commission_type').val(data.vehicleTypeZone.commission_type);
+                            $('#commission_rate').val(data.vehicleTypeZone.commission_rate);
+                            window?.selectCommissionTypeField(data.vehicleTypeZone.commission_type);
+                            
+                            // Show tiered pricing link
+                            $('#tieredPricingLink')
+                                .attr('href', '{{ url("admin/tiered-pricing") }}/' + data.vehicleTypeZone.id)
+                                .removeClass('d-none');
+                        } else {
+                           $('#priceId').val('');
+                           $('#commission_rate_field').hide();
+                           $('#tieredPricingLink').addClass('d-none');
+                        }
 
                         // Show modal only after data is set
                         $priceModal.modal('show');
