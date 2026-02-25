@@ -66,6 +66,7 @@ class Stripe
         $price = self::getOrCreatePrice($provider , $obj, $request);
         $transaction = $provider->checkout->sessions->create([
             'mode' => 'subscription',
+            'automatic_payment_methods' => ['enabled' => true],
             'success_url' => route('stripe.webhook', ['item_id' => $obj?->id, 'type' =>  $request->type]),
             'cancel_url' => route('stripe.webhook', ['item_id' => $obj?->id, 'type' =>  $request->type]),
             'metadata' => [
@@ -107,6 +108,7 @@ class Stripe
             } else {
                 $transaction = $provider->checkout->sessions->create([
                     'mode' => 'payment',
+                    'automatic_payment_methods' => ['enabled' => true],
                     'success_url' => route('stripe.webhook', ['item_id' => $obj?->id, 'type' => $request->type]),
                     'cancel_url' => route('stripe.webhook', ['item_id' => $obj?->id, 'type' => $request->type]),
                     'metadata' => [
