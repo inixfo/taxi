@@ -132,6 +132,28 @@ unset($__errorArgs, $__bag); ?>
                     </div>
 
                     <div class="form-group row">
+                        <label class="col-md-2" for="external_url">External URL (Link)</label>
+                        <div class="col-md-10">
+                            <input class="form-control" type="url" name="external_url" id="external_url"
+                                value="<?php echo e(isset($banner->external_url) ? $banner->external_url : old('external_url')); ?>"
+                                placeholder="https://example.com">
+                            <small class="text-muted">When users tap on this banner, they will be redirected to this URL</small>
+                            <?php $__errorArgs = ['external_url'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <span class="invalid-feedback d-block" role="alert">
+                                    <strong><?php echo e($message); ?></strong>
+                                </span>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
                         <label class="col-md-2"
                             for="zone"><?php echo e(__('taxido::static.service_categories.services')); ?> <span>
                                 *</span></label>

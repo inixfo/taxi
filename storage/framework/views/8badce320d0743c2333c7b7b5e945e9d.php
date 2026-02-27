@@ -1,5 +1,5 @@
 <?php $__env->startPush('scripts'); ?>
-<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo e(env('GOOGLE_MAP_API_KEY')); ?>&libraries=places,geometry,drawing&callback=initMap" defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo e(getTaxidoSettings()['location']['google_map_api_key'] ?? env('GOOGLE_MAP_API_KEY')); ?>&libraries=places,geometry,drawing&callback=initMap" defer></script>
 <script>
   (function($) {
     "use strict";

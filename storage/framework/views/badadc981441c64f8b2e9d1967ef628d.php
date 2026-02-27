@@ -171,8 +171,20 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="savePriceBtn">Save Prices</button>
+                    <div class="d-flex justify-content-between w-100 align-items-center">
+                        <div id="tieredPricingContainer">
+                            <a href="#" id="tieredPricingLink" class="btn btn-outline-primary" style="display: none;" target="_blank">
+                                <i class="ri-price-tag-3-line me-1"></i> Manage Tiered Pricing
+                            </a>
+                            <span id="tieredPricingPlaceholder" class="text-muted small fst-italic">
+                                <i class="ri-information-line me-1"></i> Save prices first to enable tiered pricing
+                            </span>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="savePriceBtn">Save Prices</button>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>
@@ -239,28 +251,38 @@
                          }
 
                          $('.invalid-feedback').addClass('d-none');
-                         // Populate form if data exists
-                         if (data?.vehicleTypeZone) {
-                             $('#priceId').val(data.vehicleTypeZone.id);
-                             $('#base_fare_charge').val(data.vehicleTypeZone.base_fare_charge);
-                             $('#base_distance').val(data.vehicleTypeZone.base_distance);
-                             $('#per_distance_charge').val(data.vehicleTypeZone.per_distance_charge);
-                             $('#per_minute_charge').val(data.vehicleTypeZone.per_minute_charge);
-                             $('#per_weight_charge').val(data.vehicleTypeZone.per_weight_charge || '');
-                             $('#waiting_charge').val(data.vehicleTypeZone.waiting_charge || '');
-                             $('#free_waiting_time_before_start_ride').val(data.vehicleTypeZone.free_waiting_time_before_start_ride || '');
-                             $('#free_waiting_time_after_start_ride').val(data.vehicleTypeZone.free_waiting_time_after_start_ride || '');
-                             $('#is_allow_airport_charge').val(data.vehicleTypeZone.is_allow_airport_charge);
-                             $('#cancellation_charge_for_rider').val(data.vehicleTypeZone.cancellation_charge_for_rider || '');
-                             $('#cancellation_charge_for_driver').val(data.vehicleTypeZone.cancellation_charge_for_driver || '');
-                             $('#charge_goes_to').val(data.vehicleTypeZone.charge_goes_to);
-                             $('#commission_type').val(data.vehicleTypeZone.commission_type);
-                             $('#commission_rate').val(data.vehicleTypeZone.commission_rate);
-                             window?.selectCommissionTypeField(data.vehicleTypeZone.commission_type);
-                         } else {
-                            $('#priceId').val('');
-                            $('#commission_rate_field').hide();
-                         }
+                        // Populate form if data exists
+                        if (data?.vehicleTypeZone) {
+                            $('#priceId').val(data.vehicleTypeZone.id);
+                            $('#base_fare_charge').val(data.vehicleTypeZone.base_fare_charge);
+                            $('#base_distance').val(data.vehicleTypeZone.base_distance);
+                            $('#per_distance_charge').val(data.vehicleTypeZone.per_distance_charge);
+                            $('#per_minute_charge').val(data.vehicleTypeZone.per_minute_charge);
+                            $('#per_weight_charge').val(data.vehicleTypeZone.per_weight_charge || '');
+                            $('#waiting_charge').val(data.vehicleTypeZone.waiting_charge || '');
+                            $('#free_waiting_time_before_start_ride').val(data.vehicleTypeZone.free_waiting_time_before_start_ride || '');
+                            $('#free_waiting_time_after_start_ride').val(data.vehicleTypeZone.free_waiting_time_after_start_ride || '');
+                            $('#is_allow_airport_charge').val(data.vehicleTypeZone.is_allow_airport_charge);
+                            $('#cancellation_charge_for_rider').val(data.vehicleTypeZone.cancellation_charge_for_rider || '');
+                            $('#cancellation_charge_for_driver').val(data.vehicleTypeZone.cancellation_charge_for_driver || '');
+                            $('#charge_goes_to').val(data.vehicleTypeZone.charge_goes_to);
+                            $('#commission_type').val(data.vehicleTypeZone.commission_type);
+                            $('#commission_rate').val(data.vehicleTypeZone.commission_rate);
+                            window?.selectCommissionTypeField(data.vehicleTypeZone.commission_type);
+                            
+                            // Show tiered pricing link, hide placeholder
+                            var tieredUrl = '<?php echo e(url("admin/tiered-pricing")); ?>/' + data.vehicleTypeZone.id;
+                            console.log('Showing tiered pricing link with URL:', tieredUrl);
+                            document.getElementById('tieredPricingLink').href = tieredUrl;
+                            document.getElementById('tieredPricingLink').style.display = 'inline-block';
+                            document.getElementById('tieredPricingPlaceholder').style.display = 'none';
+                        } else {
+                           $('#priceId').val('');
+                           $('#commission_rate_field').hide();
+                           // Hide tiered pricing link, show placeholder
+                           document.getElementById('tieredPricingLink').style.display = 'none';
+                           document.getElementById('tieredPricingPlaceholder').style.display = 'inline';
+                        }
 
                         // Show modal only after data is set
                         $priceModal.modal('show');
@@ -318,50 +340,60 @@
                      data: manualData,
                      dataType: 'json',
                      success: function(data) {
-                         // After successful price update, update preferences
-                         if (data.success && priceId) {
-                             const preferencesData = {
-                                 allow_preference: $('#allow_preference').prop('checked'),
-                                 preferences: []
-                             };
-
-                             if (preferencesData.allow_preference) {
-                                 $form.find('.preference-item').each(function() {
-                                     preferencesData.preferences.push({
-                                         preference_id: $(this).find('[name$="[preference_id]"]').val(),
-                                         price: $(this).find('[name$="[price]"]').val()
-                                     });
-                                 });
-                             }
-
-                             $.ajax({
-                                 url: `<?php echo e(url('/admin/vehicle-type-zone')); ?>/${priceId}/preferences`,
-                                 method: 'PUT',
-                                 headers: {
-                                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                                     'Accept': 'application/json'
-                                 },
-                                 data: preferencesData,
-                                 dataType: 'json',
-                                 success: function(prefData) {
-                                     showMessage($successMessage, 'Price and preferences saved successfully!');
-                                     $priceModal.modal('hide');
-                                 },
-                                 error: function(xhr) {
-                                     if (xhr.status === 422) {
-                                         showErrors(xhr.responseJSON.errors);
-                                     } else {
-                                         showMessage($errorMessage, 'Error saving preferences data.');
-                                     }
-                                 }
-                             });
-                         } else {
                          $saveButton.html('Save Prices');
                          $saveButton.prop('disabled', false);
                          $closeButton.prop('disabled', false);
+                         
                          if (data.success) {
-                             showMessage($successMessage, 'Price saved successfully!');
-                             $priceModal.modal('hide');
+                             // Get the price ID (either existing or newly created)
+                             const savedPriceId = priceId || data.vehicleTypeZone?.id || data.id;
+                             console.log('Price saved successfully, ID:', savedPriceId);
+                             
+                             // Show tiered pricing link after successful save
+                             if (savedPriceId) {
+                                 $('#priceId').val(savedPriceId);
+                                 var tieredUrl = '<?php echo e(url("admin/tiered-pricing")); ?>/' + savedPriceId;
+                                 console.log('After save - showing tiered pricing link with URL:', tieredUrl);
+                                 document.getElementById('tieredPricingLink').href = tieredUrl;
+                                 document.getElementById('tieredPricingLink').style.display = 'inline-block';
+                                 document.getElementById('tieredPricingPlaceholder').style.display = 'none';
+                             }
+                             
+                             // Handle preferences update if price already existed
+                             if (priceId) {
+                                 const preferencesData = {
+                                     allow_preference: $('#allow_preference').prop('checked'),
+                                     preferences: []
+                                 };
+
+                                 if (preferencesData.allow_preference) {
+                                     $form.find('.preference-item').each(function() {
+                                         preferencesData.preferences.push({
+                                             preference_id: $(this).find('[name$="[preference_id]"]').val(),
+                                             price: $(this).find('[name$="[price]"]').val()
+                                         });
+                                     });
+                                 }
+
+                                 $.ajax({
+                                     url: `<?php echo e(url('/admin/vehicle-type-zone')); ?>/${priceId}/preferences`,
+                                     method: 'PUT',
+                                     headers: {
+                                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                                         'Accept': 'application/json'
+                                     },
+                                     data: preferencesData,
+                                     dataType: 'json',
+                                     success: function(prefData) {
+                                         showMessage($successMessage, 'Price and preferences saved successfully!');
+                                     },
+                                     error: function(xhr) {
+                                         console.log('Preferences save error:', xhr.responseText);
+                                     }
+                                 });
+                             }
+                             
+                             showMessage($successMessage, 'Price saved successfully! You can now manage tiered pricing.');
                          } else {
                              showErrors(data.errors);
                          }

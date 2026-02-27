@@ -1036,6 +1036,35 @@ unset($__errorArgs, $__bag); ?>
                                     </div>
                                 </div>
 
+                                <?php if(isset($driver)): ?>
+                                <div class="form-group row">
+                                    <label class="col-md-2" for="photo_lock">Photo Lock</label>
+                                    <div class="col-md-10">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <span id="photo-lock-status" class="badge <?php echo e(@$driver->is_photo_locked ? 'bg-danger' : 'bg-success'); ?>">
+                                                <?php echo e(@$driver->is_photo_locked ? 'Locked' : 'Unlocked'); ?>
+
+                                            </span>
+                                            <button type="button" id="toggle-photo-lock" 
+                                                class="btn btn-sm <?php echo e(@$driver->is_photo_locked ? 'btn-success' : 'btn-danger'); ?>"
+                                                data-locked="<?php echo e(@$driver->is_photo_locked ? '1' : '0'); ?>"
+                                                data-driver-id="<?php echo e($driver->id); ?>">
+                                                <i class="<?php echo e(@$driver->is_photo_locked ? 'ri-lock-unlock-line' : 'ri-lock-line'); ?>"></i>
+                                                <?php echo e(@$driver->is_photo_locked ? 'Unlock Photo' : 'Lock Photo'); ?>
+
+                                            </button>
+                                        </div>
+                                        <small class="text-muted d-block mt-1">
+                                            When locked, the driver cannot change their profile photo from the app.
+                                            <?php if(@$driver->photo_locked_at): ?>
+                                                <br>Locked on: <?php echo e(\Carbon\Carbon::parse($driver->photo_locked_at)->format('M d, Y H:i')); ?>
+
+                                            <?php endif; ?>
+                                        </small>
+                                    </div>
+                                </div>
+                                <?php endif; ?>
+
                                 <div class="form-group row">
                                     <div class="col-12">
                                         <div class="submit-btn">
@@ -1061,7 +1090,7 @@ unset($__errorArgs, $__bag); ?>
 <?php $__env->startPush('scripts'); ?>
 <script src="<?php echo e(asset('js/firebase/firebase-app-compat.js')); ?>"></script>
 <script src="<?php echo e(asset('js/firebase/firebase-firestore-compat.js')); ?>"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo e(env('GOOGLE_MAP_API_KEY')); ?>&libraries=places"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo e(getTaxidoSettings()['location']['google_map_api_key'] ?? env('GOOGLE_MAP_API_KEY')); ?>&libraries=places"></script>
 <script>
     // Firebase configuration
     const firebaseConfig = {
@@ -1398,6 +1427,54 @@ unset($__errorArgs, $__bag); ?>
             $.validator.addMethod("notOnlyNumeric", function(value, element) {
                 return this.optional(element) || !/^\d+$/.test(value);
             }, "This field cannot contain only numbers.");
+
+            // Photo Lock Toggle
+            $('#toggle-photo-lock').on('click', function() {
+                const btn = $(this);
+                const driverId = btn.data('driver-id');
+                const isLocked = btn.data('locked') === '1' || btn.data('locked') === 1;
+                const action = isLocked ? 'unlock' : 'lock';
+                const url = `/admin/driver/${driverId}/${action}-photo`;
+                
+                btn.prop('disabled', true).html('<i class="ri-loader-4-line ri-spin"></i> Processing...');
+                
+                $.ajax({
+                    url: url,
+                    type: 'PUT',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') || '<?php echo e(csrf_token()); ?>'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            const newLocked = !isLocked;
+                            btn.data('locked', newLocked ? '1' : '0');
+                            btn.removeClass('btn-success btn-danger')
+                               .addClass(newLocked ? 'btn-success' : 'btn-danger')
+                               .html(`<i class="${newLocked ? 'ri-lock-unlock-line' : 'ri-lock-line'}"></i> ${newLocked ? 'Unlock Photo' : 'Lock Photo'}`);
+                            
+                            $('#photo-lock-status')
+                                .removeClass('bg-success bg-danger')
+                                .addClass(newLocked ? 'bg-danger' : 'bg-success')
+                                .text(newLocked ? 'Locked' : 'Unlocked');
+                            
+                            alert(response.message || `Photo ${action}ed successfully`);
+                        } else {
+                            alert(response.message || 'Failed to update photo lock status');
+                            btn.prop('disabled', false)
+                               .html(`<i class="${isLocked ? 'ri-lock-unlock-line' : 'ri-lock-line'}"></i> ${isLocked ? 'Unlock Photo' : 'Lock Photo'}`);
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error('Error:', xhr);
+                        alert('Failed to update photo lock status. Please try again.');
+                        btn.prop('disabled', false)
+                           .html(`<i class="${isLocked ? 'ri-lock-unlock-line' : 'ri-lock-line'}"></i> ${isLocked ? 'Unlock Photo' : 'Lock Photo'}`);
+                    },
+                    complete: function() {
+                        btn.prop('disabled', false);
+                    }
+                });
+            });
 
             $('#driverForm').validate({
                 ignore: [],
